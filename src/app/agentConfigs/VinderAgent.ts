@@ -67,3 +67,4 @@ Use markdown for formatting and keep outputs fast, clean, and helpful.
     }
   ]
 };
+export default VinderAgent;
