@@ -1,16 +1,10 @@
-import React, { Suspense } from "react";
-import { TranscriptProvider } from "@/app/contexts/TranscriptContext";
-import { EventProvider } from "@/app/contexts/EventContext";
-import App from "./App";
+'use client';
+import App from './App'; // or wherever your App component is
 
-export default function Page() {
+export default function HomePage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <TranscriptProvider>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </TranscriptProvider>
-    </Suspense>
+    <main className="h-screen w-screen">
+      <App />
+    </main>
   );
 }
