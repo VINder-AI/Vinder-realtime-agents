@@ -1,52 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useChat } from 'ai/react';
+import { useEffect, useRef } from 'react';
 
 export function VinderAgent() {
-  const [input, setInput] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const chatRef = useRef<HTMLDivElement>(null);
 
-  const sendPrompt = async () => {
-    if (!input.trim()) return;
-    setLoading(true);
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: input }),
-      });
-      const data = await res.json();
-      setResponse(data.reply);
-    } catch (err) {
-      setResponse('Error talking to Vinder. Try again soon.');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
-  };
+  }, [messages]);
 
   return (
-    <div className="max-w-xl mx-auto p-4 text-white">
-      <h1 className="text-3xl font-bold mb-4">Hello, I’m Vinder 🤖</h1>
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Ask me anything about your next car..."
-        className="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600"
-        rows={4}
-      />
-      <button
-        onClick={sendPrompt}
-        disabled={loading}
-        className="mt-2 px-4 py-2 rounded-md bg-purple-600 hover:bg-purple-700"
+    <div className="flex flex-col h-screen p-4 bg-black text-white">
+      <div className="text-2xl font-bold mb-2 text-lavender">Vinder 🧠</div>
+      
+      <div
+        ref={chatRef}
+        className="flex-1 overflow-y-auto border border-gray-700 rounded-xl p-4 mb-4"
       >
-        {loading ? 'Thinking...' : 'Ask Vinder'}
-      </button>
-      {response && (
-        <div className="mt-4 bg-gray-900 p-4 rounded-md border border-gray-700">
-          <p>{response}</p>
-        </div>
-      )}
+        {messages.map((m, i) => (
+          <div key={i} className="mb-3">
+            <div className={m.role === 'user' ? 'text-right' : 'text-left'}>
+              <span className={`inline-block p-2 rounded-xl ${m.role === 'user' ? 'bg-lavender text-black' : 'bg-gray-800 text-white'}`}>
+                {m.content}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex gap-2">
+        <input
+          value={input}
+          onChange={handleInputChange}
+          className="flex-1 px-4 py-2 rounded-lg text-black"
+          placeholder="Ask me anything about vehicles..."
+        />
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="px-4 py-2 bg-lavender text-black rounded-lg font-semibold"
+        >
+          {isLoading ? '...' : 'Send'}
+        </button>
+      </form>
     </div>
   );
 }
