@@ -1,3 +1,4 @@
+import { VinderAgent } from './VinderAgent';
 import { simpleHandoffScenario } from './simpleHandoff';
 import { customerServiceRetailScenario } from './customerServiceRetail';
 import { chatSupervisorScenario } from './chatSupervisor';
@@ -9,6 +10,11 @@ export const allAgentSets: Record<string, RealtimeAgent[]> = {
   simpleHandoff: simpleHandoffScenario,
   customerServiceRetail: customerServiceRetailScenario,
   chatSupervisor: chatSupervisorScenario,
+  vinder: [VinderAgent],
 };
 
 export const defaultAgentSetKey = 'chatSupervisor';
+
+export const agentConfigs = {
+  vinder: VinderAgent,
+};
